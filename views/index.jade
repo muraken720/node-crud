@@ -1,0 +1,90 @@
+div(data-role='page', id='index')
+  div(data-role='header')
+    h1 Memo
+
+  div(data-role='content')
+    ul#memolist(data-role='listview', data-inset='true')
+      - for(var index=0; index<memos.length; index++) {
+        li 
+          a(href='#view', id=memos[index]._id)
+            h3=memos[index].content 
+      - }
+
+  div(data-role='footer', data-position='inline')
+    a(href='#add', data-icon='plus', class='ui-btn-left') Add
+
+div(data-role='page', id='add')
+  div(data-role='header', data-position='inline')
+    a(data-rel='back', data-icon='back') Back
+    h1 Memo Add
+    a#save-btn(href='./', data-icon='check', class='ui-btn-right', rel='external') Save
+
+  div(data-role='content')
+    div(data-role='filedcontain')
+      label(for='memo-add') Memo
+      textarea#memo-add
+
+  div(data-role='footer', data-position='inline')
+    a(href='#add', data-icon='plus', class='ui-btn-left') Add
+
+div(data-role='page', id='view')
+  div(data-role='header', data-position='inline')
+    a(data-rel='back', data-icon='back') Back
+    h1 Memo View
+    a(href='#edit', data-icon='gear', class='ui-btn-right') Edit
+
+  div(data-role='content')
+    div(data-role='filedcontain')
+      label(for='memo-view') Memo
+      p#memo-view
+        | message
+
+  div(data-role='footer', data-position='inline')
+    a(href='#add', data-icon='plus', class='ui-btn-left') Add
+
+div(data-role='page', id='edit')
+  div(data-role='header', data-position='inline')
+    a(data-rel='back', data-icon='back') Back
+    h1 Memo Edit
+    a(href='#view', data-icon='check', class='ui-btn-right') Save
+
+  div(data-role='content')
+    div(data-role='filedcontain')
+      label(for='memo-edit') Memo
+      textarea#memo-edit
+
+  div(data-role='footer', data-position='inline')
+    a(href='#add', data-icon='plus', class='ui-btn-left') Add
+
+script
+  var mstore = {};
+
+  $(function() {
+    $("#view").bind('pageshow', function(e, ui) {
+      $.get(
+        'memo/' + mstore.selectedid,
+        onGetMemo
+        );
+    });
+
+    function onGetMemo(data) {
+      $("#memo-view").html(data.content);
+    };
+
+    $("#save-btn").bind('click', function(e) {
+      $.post(
+        'memo',
+        { content : $("#memo-add").val() },
+        onSuccess,
+        'json'
+        );
+    });
+
+    function onSuccess(data) {
+      alert(data.message);
+    };
+
+    $("#memolist").delegate('a', 'click', function(e) {
+      mstore.selectedid = this.id;
+    });
+  });
