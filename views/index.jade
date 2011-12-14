@@ -79,7 +79,7 @@ script
 
     $("#index").bind('pageshow', function(e, ui) {
       $.get(
-        'memo'
+        'memo/list'
         , function(data) {
             $("#memolist").empty();
             for(var index=0; index < data.length; index++) {
