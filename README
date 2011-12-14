@@ -1,1 +1,9 @@
 This is a simple CRUD application using Node.js, express/jade, mongodb/mongoos and jQuery Mobile.
+
+Special Thanks!
+ -Node.js
+ -Expess
+ -Jade
+ -MongoDB
+ -mongoose
+ -jQuery Mobile
