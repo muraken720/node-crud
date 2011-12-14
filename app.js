@@ -56,7 +56,7 @@ app.configure(function() {
 
 // Routes
 
-app.get('/', function(req, res) {
+app.get('/memo', function(req, res) {
   console.log("index");
   Memo.find({}, function(err, data) {
     if(err) return next(err);
@@ -64,7 +64,7 @@ app.get('/', function(req, res) {
   });
 });
 
-app.get('/memo', function(req, res, next) {
+app.get('/memo/list', function(req, res, next) {
   console.log("get memos");
   Memo.find({}, function(err, data) {
     if(err) return next(err);
