@@ -3,8 +3,6 @@
 /**
  * Module dependencies.
  */
-require.paths = require.paths.unshift(__dirname + '/../node_modules');
-
 var express = require('express')
   , mongoose = require('mongoose')
   , mongodb = require('mongodb')
