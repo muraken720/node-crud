@@ -57,6 +57,7 @@ app.configure(function() {
 // Routes
 
 app.get('/', function(req, res) {
+  console.log("index");
   Memo.find({}, function(err, data) {
     if(err) return next(err);
     res.render('index', { memos: data });
@@ -64,10 +65,9 @@ app.get('/', function(req, res) {
 });
 
 app.get('/memo', function(req, res, next) {
-  console.log("get memo");
+  console.log("get memos");
   Memo.find({}, function(err, data) {
     if(err) return next(err);
-    console.log(data);
     res.json(data);
   });
 });
@@ -92,13 +92,13 @@ app.post('/memo', function(req, res, next) {
 
 app.put('/memo/:id', function(req, res, next) {
   console.log("put memo : " + req.params.id);
-  var memo = new Memo();
-  memo._id = ObjectId(req.params.id);
-  memo.content = req.body.content;
-  memo.save(function(err) {
-    if(err) return next(err);
-    console.log("memo save!");
-    res.json({ message : 'Success!'});
+  Memo.update(
+    { _id : ObjectId(req.params.id) }
+    , { content : req.body.content, date : new Date() }
+    , { upsert : false, multi : false }
+    , function(err) {
+      if(err) return next(err);
+      res.json({ message : 'Success!'});
   });
 });
 

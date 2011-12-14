@@ -1,90 +1,142 @@
-div(data-role='page', id='index')
+div#index(data-role='page')
   div(data-role='header')
     h1 Memo
 
   div(data-role='content')
     ul#memolist(data-role='listview', data-inset='true')
       - for(var index=0; index<memos.length; index++) {
-        li 
+        li
           a(href='#view', id=memos[index]._id)
-            h3=memos[index].content 
+            p=memos[index].content
       - }
 
-  div(data-role='footer', data-position='inline')
-    a(href='#add', data-icon='plus', class='ui-btn-left') Add
+  div.ui-header(data-role='footer')
+    a(href='#add', data-icon='plus') Add
+    h4 Kenichiro Murata
 
-div(data-role='page', id='add')
-  div(data-role='header', data-position='inline')
-    a(data-rel='back', data-icon='back') Back
+div#add(data-role='page')
+  div(data-role='header')
+    a(data-rel='back', data-icon='back', data-derection='reverse') Back
     h1 Memo Add
-    a#save-btn(href='./', data-icon='check', class='ui-btn-right', rel='external') Save
+    a#save-abtn(href='#', data-icon='check') Save
 
   div(data-role='content')
     div(data-role='filedcontain')
       label(for='memo-add') Memo
       textarea#memo-add
 
-  div(data-role='footer', data-position='inline')
-    a(href='#add', data-icon='plus', class='ui-btn-left') Add
+  div.ui-header(data-role='footer')
+    a(href='#add', data-icon='plus') Add
+    h4 Kenichiro Murata
 
-div(data-role='page', id='view')
-  div(data-role='header', data-position='inline')
-    a(data-rel='back', data-icon='back') Back
+div#view(data-role='page')
+  div(data-role='header')
+    a(data-rel='back', data-icon='back', data-derection='reverse') Back
     h1 Memo View
-    a(href='#edit', data-icon='gear', class='ui-btn-right') Edit
+    a(href='#edit', data-icon='gear', data-transition='flip') Edit
 
   div(data-role='content')
     div(data-role='filedcontain')
       label(for='memo-view') Memo
       p#memo-view
-        | message
 
-  div(data-role='footer', data-position='inline')
-    a(href='#add', data-icon='plus', class='ui-btn-left') Add
+  div.ui-header(data-role='footer')
+    a(href='#add', data-icon='plus') Add
+    h4 Kenichiro Murata
+    a#del-btn(href='#', data-icon='delete') Delete
 
-div(data-role='page', id='edit')
-  div(data-role='header', data-position='inline')
-    a(data-rel='back', data-icon='back') Back
+div#edit(data-role='page')
+  div(data-role='header')
+    a(data-rel='back', data-icon='back', data-derection='reverse') Back
     h1 Memo Edit
-    a(href='#view', data-icon='check', class='ui-btn-right') Save
+    a#save-ebtn(href='#', data-icon='check') Save
 
   div(data-role='content')
     div(data-role='filedcontain')
       label(for='memo-edit') Memo
       textarea#memo-edit
 
-  div(data-role='footer', data-position='inline')
-    a(href='#add', data-icon='plus', class='ui-btn-left') Add
+  div.ui-header(data-role='footer')
+    a(href='#add', data-icon='plus') Add
+    h4 Kenichiro Murata
+
+div#msg-dialog(data-role='page')
+  div(data-role='header')
+    h1 Message
+
+  div(data-role='content')
+    p#message
+    a(href='#index', data-role='button') OK
+
 
 script
   var mstore = {};
 
   $(function() {
-    $("#view").bind('pageshow', function(e, ui) {
-      $.get(
-        'memo/' + mstore.selectedid,
-        onGetMemo
-        );
-    });
-
-    function onGetMemo(data) {
-      $("#memo-view").html(data.content);
-    };
-
-    $("#save-btn").bind('click', function(e) {
-      $.post(
-        'memo',
-        { content : $("#memo-add").val() },
-        onSuccess,
-        'json'
-        );
-    });
-
-    function onSuccess(data) {
-      alert(data.message);
-    };
-
     $("#memolist").delegate('a', 'click', function(e) {
       mstore.selectedid = this.id;
     });
+
+    $("#index").bind('pageshow', function(e, ui) {
+      $.get(
+        'memo'
+        , function(data) {
+            $("#memolist").empty();
+            for(var index=0; index < data.length; index++) {
+              $("#memolist").append('<li><a href="#view" id="' + data[index]._id + '"><p>' + data[index].content + '</p></a></li>');
+            }
+            $("#memolist").listview('refresh');
+          }
+        );
+    });
+
+    $("#view").bind('pageshow', function(e, ui) {
+      $.get(
+        'memo/' + mstore.selectedid
+        , function(data) {
+            $("#memo-view").html(data.content);
+          }
+        );
+    });
+
+    $("#edit").bind('pageshow', function(e, ui) {
+      $.get(
+        'memo/' + mstore.selectedid
+        , function(data) {
+            $("#memo-edit").val(data.content);
+          }
+        );
+    });
+
+    $("#save-abtn").bind('click', function(e) {
+      $.post(
+        'memo'
+        , { content : $("#memo-add").val() }
+        , onSuccess
+        , 'json'
+      );
+    });
+
+    $("#save-ebtn").bind('click', function(e) {
+      $.ajax({
+        type : 'PUT'
+        , url : 'memo/' + mstore.selectedid
+        , data : { content : $("#memo-edit").val() }
+        , success : onSuccess
+        , dataType : 'json'
+      });
+    });
+
+    $("#del-btn").bind('click', function(e) {
+      $.ajax({
+        type : 'DELETE'
+        , url : 'memo/' + mstore.selectedid
+        , success : onSuccess
+      });
+    });
+
+    function onSuccess(data) {
+      $("#message").html(data.message);
+      $.mobile.changePage('#msg-dialog', {transition : 'slidedown', rolei : 'dialog'});
+    };
   });
