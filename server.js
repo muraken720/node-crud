@@ -1,3 +1,4 @@
+// for node-ninja
 
 /**
  * Module dependencies.
