@@ -11,7 +11,7 @@ div#index(data-role='page')
             p=memos[index].content
       - }
 
-  div.ui-bar(data-role='footer', data-id='footer', data-position='fixed')
+  div.ui-bar(data-role='footer', data-position='fixed')
     a(href='#info-dialog', data-icon='info', data-rel='dialog') About
 
 div#add(data-role='page')
@@ -25,7 +25,7 @@ div#add(data-role='page')
       label(for='memo-add') Memo
       textarea#memo-add
 
-  div.ui-bar(data-role='footer', data-id='footer', data-position='fixed')
+  div.ui-bar(data-role='footer', data-position='fixed')
     a#save-abtn(href='#', data-icon='check') Save
 
 div#view(data-role='page')
@@ -39,7 +39,7 @@ div#view(data-role='page')
       label(for='memo-view') Memo
       p#memo-view
 
-  div.ui-bar(data-role='footer', data-id='footer', data-position='fixed')
+  div.ui-bar(data-role='footer', data-position='fixed')
     div(data-role='controlgroup', data-type='horizontal')
       a(href='#edit', data-icon='gear', data-transition='flip') Edit
       a(href='#confirm-dialog', data-icon='delete', data-rel='dialog') Delete
@@ -55,7 +55,7 @@ div#edit(data-role='page')
       label(for='memo-edit') Memo
       textarea#memo-edit
 
-  div.ui-bar(data-role='footer', data-id='footer', data-position='fixed')
+  div.ui-bar(data-role='footer', data-position='fixed')
     a#save-ebtn(href='#', data-icon='check') Save
 
 div#msg-dialog(data-role='page')
@@ -101,11 +101,11 @@ script
     });
 
     $("#add").bind('pagebeforeshow', function(e, ui) {
-      $("#memo-add").val('');
+      $("#memo-add").val(' ');
     });
 
     $("#view").bind('pagebeforeshow', function(e, ui) {
-      $("#memo-view").html('');
+      $("#memo-view").html(' ');
       $.get(
         'memo/' + mstore.selectedid
         , function(data) {
@@ -115,7 +115,7 @@ script
     });
 
     $("#edit").bind('pagebeforeshow', function(e, ui) {
-      $("#memo-edit").val('');
+      $("#memo-edit").val(' ');
       $.get(
         'memo/' + mstore.selectedid
         , function(data) {
