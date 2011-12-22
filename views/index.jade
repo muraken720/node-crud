@@ -1,6 +1,7 @@
 div#index(data-role='page')
-  div(data-role='header')
+  div(data-role='header', data-position='fixed')
     h1 Memo
+    a.ui-btn-right(href='#add', data-icon='plus') Add
 
   div(data-role='content')
     ul#memolist(data-role='listview', data-inset='true')
@@ -10,64 +11,73 @@ div#index(data-role='page')
             p=memos[index].content
       - }
 
-  div.ui-header(data-role='footer')
-    a(href='#add', data-icon='plus') Add
-    h4 Kenichiro Murata
+  div.ui-bar(data-role='footer', data-id='footer', data-position='fixed')
+    a(href='#info-dialog', data-icon='info', data-rel='dialog') About
 
 div#add(data-role='page')
-  div(data-role='header')
+  div(data-role='header', data-position='fixed')
     a(data-rel='back', data-icon='back', data-derection='reverse') Back
     h1 Memo Add
-    a#save-abtn(href='#', data-icon='check') Save
+    a(href='#add', data-icon='plus') Add
 
   div(data-role='content')
     div(data-role='filedcontain')
       label(for='memo-add') Memo
       textarea#memo-add
 
-  div.ui-header(data-role='footer')
-    a(href='#add', data-icon='plus') Add
-    h4 Kenichiro Murata
+  div.ui-bar(data-role='footer', data-id='footer', data-position='fixed')
+    a#save-abtn(href='#', data-icon='check') Save
 
 div#view(data-role='page')
-  div(data-role='header')
+  div(data-role='header', data-position='fixed')
     a(data-rel='back', data-icon='back', data-derection='reverse') Back
     h1 Memo View
-    a(href='#edit', data-icon='gear', data-transition='flip') Edit
+    a(href='#add', data-icon='plus') Add
 
   div(data-role='content')
     div(data-role='filedcontain')
       label(for='memo-view') Memo
       p#memo-view
 
-  div.ui-header(data-role='footer')
-    a(href='#add', data-icon='plus') Add
-    h4 Kenichiro Murata
-    a#del-btn(href='#', data-icon='delete') Delete
+  div.ui-bar(data-role='footer', data-id='footer', data-position='fixed')
+    div(data-role='controlgroup', data-type='horizontal')
+      a(href='#edit', data-icon='gear', data-transition='flip') Edit
+      a(href='#confirm-dialog', data-icon='delete', data-rel='dialog') Delete
 
 div#edit(data-role='page')
-  div(data-role='header')
+  div(data-role='header', data-position='fixed')
     a(data-rel='back', data-icon='back', data-derection='reverse') Back
     h1 Memo Edit
-    a#save-ebtn(href='#', data-icon='check') Save
+    a(href='#add', data-icon='plus') Add
 
   div(data-role='content')
     div(data-role='filedcontain')
       label(for='memo-edit') Memo
       textarea#memo-edit
 
-  div.ui-header(data-role='footer')
-    a(href='#add', data-icon='plus') Add
-    h4 Kenichiro Murata
+  div.ui-bar(data-role='footer', data-id='footer', data-position='fixed')
+    a#save-ebtn(href='#', data-icon='check') Save
 
 div#msg-dialog(data-role='page')
   div(data-role='header')
     h1 Message
-
   div(data-role='content')
     p#message
     a(href='#index', data-role='button') OK
 
+div#info-dialog(data-role='page')
+  div(data-role='header')
+    h1 About
+  div(data-role='content')
+    p
+    | This is a RESTful Memo Apps using Node.js, express, jade, MongoDB, mongoose and jQuery Mobile.
+
+div#confirm-dialog(data-role='page')
+  div(data-role='header')
+    h1 Confirm
+  div(data-role='content')
+    p Are you sure you want to delete the item?
+    a#del-btn(href='#', data-role='button') Delete
 
 script
   var mstore = {};
@@ -77,7 +87,7 @@ script
       mstore.selectedid = this.id;
     });
 
-    $("#index").bind('pageshow', function(e, ui) {
+    $("#index").bind('pagebeforeshow', function(e, ui) {
       $.get(
         'memo/list'
         , function(data) {
@@ -90,11 +100,11 @@ script
         );
     });
 
-    $("#add").bind('pageshow', function(e, ui) {
+    $("#add").bind('pagebeforeshow', function(e, ui) {
       $("#memo-add").val('');
     });
 
-    $("#view").bind('pageshow', function(e, ui) {
+    $("#view").bind('pagebeforeshow', function(e, ui) {
       $("#memo-view").html('');
       $.get(
         'memo/' + mstore.selectedid
@@ -104,7 +114,7 @@ script
         );
     });
 
-    $("#edit").bind('pageshow', function(e, ui) {
+    $("#edit").bind('pagebeforeshow', function(e, ui) {
       $("#memo-edit").val('');
       $.get(
         'memo/' + mstore.selectedid
