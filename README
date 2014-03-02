@@ -2,7 +2,7 @@ This is a simple CRUD application using Node.js, express/jade, mongodb/mongoos a
 
 Special Thanks!
  -Node.js
- -Expess
+ -Express
  -Jade
  -MongoDB
  -mongoose
